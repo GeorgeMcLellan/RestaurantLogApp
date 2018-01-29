@@ -18,20 +18,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private BottomNavigationView navigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         startFragment(new com.development.georgemcl.restaurantlogapp.MapFragment());
     }
 
     private void startFragment(Fragment fragment){
-        Log.d(TAG, "Starting new fragment");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, fragment).commit();
     }
@@ -57,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public void setHomeAsSelectedNav(){
+        navigation.getMenu().getItem(0).setChecked(true);
+    }
 
 
 

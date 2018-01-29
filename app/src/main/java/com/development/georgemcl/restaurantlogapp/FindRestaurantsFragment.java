@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -84,12 +85,8 @@ public class FindRestaurantsFragment extends Fragment {
                 MapFragment mapFragment = new MapFragment();
                 mapFragment.setArguments(placeData);
 
+                ((MainActivity)getActivity()).setHomeAsSelectedNav();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, mapFragment).commit();
-                /*
-                ((MainActivity)getActivity()).setViewAsSelectedNav();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragmentContainer, new ClockedOnEmployeeListFrag()).commit();
-                 */
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);

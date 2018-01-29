@@ -10,10 +10,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Restaurant {
     //Default
+    private String id;
     private String name;
     private String address;
     private String phoneNumber;
-    private String id;
     private Uri websiteUri;
     private LatLng latLng;
     private float rating;
@@ -22,12 +22,11 @@ public class Restaurant {
     //Added
     private String cuisine;
 
-    public Restaurant(String name, String address, String phoneNumber,
-                     String id, Uri websiteUri, LatLng latLng, float rating, String attributions) {
+    public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, float rating, String attributions) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.id = id;
         this.websiteUri = websiteUri;
         this.latLng = latLng;
         this.rating = rating;
@@ -35,6 +34,14 @@ public class Restaurant {
     }
 
     public Restaurant(){}
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -58,14 +65,6 @@ public class Restaurant {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Uri getWebsiteUri() {
@@ -102,11 +101,11 @@ public class Restaurant {
 
     @Override
     public String toString() {
-        return "PlaceInfo{" +
-                "name='" + name + '\'' +
+        return "Restaurant{" +
+                " id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", id='" + id + '\'' +
                 ", websiteUri=" + websiteUri +
                 ", latLng=" + latLng +
                 ", rating=" + rating +
