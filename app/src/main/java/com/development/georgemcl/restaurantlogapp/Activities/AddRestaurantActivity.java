@@ -1,0 +1,92 @@
+package com.development.georgemcl.restaurantlogapp.Activities;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.RatingBar;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
+import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
+import com.development.georgemcl.restaurantlogapp.R;
+
+public class AddRestaurantActivity extends AppCompatActivity {
+
+    TextView nameTxt;
+    Spinner cuisineSpn;
+    SeekBar priceSb;
+    RatingBar ratingRb;
+    Button addBtn;
+
+    private static final String TAG  = "AddRestaurantActivity";
+
+    private Intent mIntent;
+    private RestaurantDbHelper restaurantDb;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_restaurant);
+        nameTxt = (TextView) findViewById(R.id.nameTxt);
+        cuisineSpn = (Spinner) findViewById(R.id.cuisineSpn);
+        priceSb = (SeekBar) findViewById(R.id.priceSb);
+        ratingRb = (RatingBar) findViewById(R.id.ratingRb);
+        addBtn = (Button) findViewById(R.id.addBtn);
+
+        restaurantDb = new RestaurantDbHelper(this);
+
+        mIntent = getIntent();
+
+        ArrayAdapter cuisineAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.cuisines));
+        cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        cuisineSpn.setAdapter(cuisineAdapter);
+
+        prepopulateFields();
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addRestaurantToDb();
+            }
+        });
+
+    }
+
+    private void prepopulateFields() {
+
+        nameTxt.setText(mIntent.getStringExtra("name"));
+        ratingRb.setRating(mIntent.getFloatExtra("rating",-1));
+    }
+
+    private void addRestaurantToDb() {
+        boolean isInserted = restaurantDb.insertData(
+                mIntent.getStringExtra("id"),
+                mIntent.getStringExtra("name"),
+                mIntent.getDoubleExtra("lat",-1),
+                mIntent.getDoubleExtra("lng",-1),
+                cuisineSpn.getSelectedItem().toString(),
+                getPrice(),
+                ratingRb.getRating()
+                );
+        if (isInserted){
+            Log.d(TAG,"INSERTED");
+            Toast.makeText(this, "Restaurant Added", Toast.LENGTH_SHORT).show();
+            finish();
+        }else{
+            Log.d(TAG, "NOT INSERTED");
+        }
+
+    }
+
+    public int getPrice() {
+        return priceSb.getProgress();
+    }
+}

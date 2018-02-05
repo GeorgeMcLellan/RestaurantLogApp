@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp;
+package com.development.georgemcl.restaurantlogapp.Activities;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -6,14 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.development.georgemcl.restaurantlogapp.Fragments.FindRestaurantsFragment;
+import com.development.georgemcl.restaurantlogapp.Fragments.MapFragment;
+import com.development.georgemcl.restaurantlogapp.Fragments.ShareFragment;
+import com.development.georgemcl.restaurantlogapp.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        startFragment(new com.development.georgemcl.restaurantlogapp.MapFragment());
+        startFragment(new MapFragment());
     }
 
     private void startFragment(Fragment fragment){
@@ -44,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    startFragment(new com.development.georgemcl.restaurantlogapp.MapFragment());
+                    startFragment(new MapFragment());
                     return true;
                 case R.id.navigation_find:
                     startFragment(new FindRestaurantsFragment());

@@ -1,10 +1,11 @@
-package com.development.georgemcl.restaurantlogapp;
+package com.development.georgemcl.restaurantlogapp.Fragments;
 
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Criteria;
@@ -19,10 +20,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
+import com.development.georgemcl.restaurantlogapp.Activities.AddRestaurantActivity;
+import com.development.georgemcl.restaurantlogapp.CustomInfoWindow;
 import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
+import com.development.georgemcl.restaurantlogapp.R;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
@@ -42,7 +47,7 @@ import com.google.android.gms.tasks.Task;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback{
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener{
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -52,7 +57,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
 
     private Boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
-    //private GoogleApiClient mGoogleApiClient;
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
 
@@ -91,7 +95,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        CustomInfoWindow customInfoWindow = new CustomInfoWindow(getContext());
+        mMap.setInfoWindowAdapter(customInfoWindow);
+        mMap.setOnInfoWindowClickListener(this);
+        moveCameraToUserLocation();
+        populateMap();
+    }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String s = ((Restaurant)marker.getTag()).getId();
+        Toast.makeText(getContext(), "Clicked "+ s, Toast.LENGTH_SHORT).show();
+    }
+
+    private void moveCameraToUserLocation() {
         if (mLocationPermissionGranted) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
@@ -113,21 +130,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), MAP_ZOOM));
             }
         }
-
-
-        populateMap();
-
     }
 
     private void populateMap() {
         Cursor cursor = restaurantDb.getAllData();
+        Restaurant currentRestaurant;
 
         while(cursor.moveToNext()){
-            LatLng latLng = new LatLng(cursor.getDouble(3), cursor.getDouble(4));
+            currentRestaurant = new Restaurant();
+            currentRestaurant.setId(cursor.getString(0));
+            currentRestaurant.setName(cursor.getString(1));
+            LatLng latlng = new LatLng(cursor.getDouble(2), cursor.getDouble(3));
+            currentRestaurant.setLatLng(latlng);
+            currentRestaurant.setCuisine(cursor.getString(4));
+            currentRestaurant.setPriceLevel(cursor.getInt(5));
+            currentRestaurant.setRating(cursor.getFloat(6));
+
             MarkerOptions options = new MarkerOptions()
-                    .position(latLng)
-                    .title(cursor.getString(2));
-            mMap.addMarker(options);
+                    .position(latlng);
+            Marker marker = mMap.addMarker(options);
+            marker.setTag(currentRestaurant);
         }
     }
 
@@ -145,10 +167,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
     private void addRestaurantToMap(final Restaurant restaurant){
         //Find restaurant on the map
         try {
-            MarkerOptions options = new MarkerOptions()
+            /*MarkerOptions options = new MarkerOptions()
                     .position(restaurant.getLatLng())
                     .title(restaurant.getName());
-            mCurrentMarker = mMap.addMarker(options);
+            mCurrentMarker = mMap.addMarker(options);*/
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurant.getLatLng(), MAP_ZOOM));
         }catch (NullPointerException e){
             Log.e(TAG, "NullPointerException : " + e.getMessage());
@@ -161,7 +183,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Add the restaurant to db & map
-                        addRestaurantToDb(restaurant);
+                        //addRestaurantToDb(restaurant);
+                        addRestaurant(restaurant);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -173,26 +196,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                 .show();
     }
 
-    private void addRestaurantToDb(Restaurant restaurant){
-        boolean isInserted = restaurantDb.insertData(restaurant.getId(), restaurant.getName(), restaurant.getLatLng().latitude, restaurant.getLatLng().longitude, "Japanese", "$$", "4");
-        if (isInserted){
-            Log.d(TAG,"INSERTED");
-        }else{
-            Log.d(TAG, "NOT INSERTED");
-        }
+    private void addRestaurant(Restaurant restaurant) {
+        Intent intent = new Intent(getContext(), AddRestaurantActivity.class);
+        intent.putExtra("id", restaurant.getId())
+                .putExtra("name", restaurant.getName())
+                .putExtra("address", restaurant.getAddress())
+                .putExtra("phonenumber", restaurant.getPhoneNumber())
+                .putExtra("website", restaurant.getWebsiteUri())
+                .putExtra("lat", restaurant.getLatLng().latitude)
+                .putExtra("lng", restaurant.getLatLng().longitude)
+                .putExtra("rating", restaurant.getRating());
+
+        startActivity(intent);
     }
+
 
     private void checkIfUserSelectedPlaceInFindFrag() {
         Bundle extras = getArguments();
         if (extras != null){
             final String placeId = extras.getString("PlaceId");
-            Log.i(TAG, "Place Retrieved.a. FIELD_ID : " + placeId);
-            addRestaurant(placeId);
+            Log.i(TAG, "Place Retrieved. Place ID : " + placeId);
+            retrieveRestaurantDetails(placeId);
+            setArguments(null);
         }
     }
 
 
-    private void addRestaurant(String placeId){
+    private void retrieveRestaurantDetails(String placeId){
 
         final Restaurant restaurant = new Restaurant();
 

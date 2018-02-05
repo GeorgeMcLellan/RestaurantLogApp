@@ -21,8 +21,9 @@ public class Restaurant {
 
     //Added
     private String cuisine;
+    private int priceLevel;
 
-    public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, float rating, String attributions) {
+    public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, String attributions, float rating) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -31,6 +32,28 @@ public class Restaurant {
         this.latLng = latLng;
         this.rating = rating;
         this.attributions = attributions;
+    }
+
+    public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, String attributions, float rating, String cuisine, int priceLevel) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.websiteUri = websiteUri;
+        this.latLng = latLng;
+        this.rating = rating;
+        this.attributions = attributions;
+        this.cuisine = cuisine;
+        this.priceLevel = priceLevel;
+    }
+
+    public Restaurant(String id, String name, LatLng latLng, float rating,  String cuisine, int priceLevel) {
+        this.id = id;
+        this.name = name;
+        this.latLng = latLng;
+        this.rating = rating;
+        this.cuisine = cuisine;
+        this.priceLevel = priceLevel;
     }
 
     public Restaurant(){}
@@ -99,6 +122,22 @@ public class Restaurant {
         this.attributions = attributions;
     }
 
+    public String getCuisine() {
+        return cuisine;
+    }
+
+    public void setCuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
+
+    public int getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(int priceLevel) {
+        this.priceLevel = priceLevel;
+    }
+
     @Override
     public String toString() {
         return "Restaurant{" +
@@ -107,9 +146,11 @@ public class Restaurant {
                 ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", websiteUri=" + websiteUri +
-                ", latLng=" + latLng +
-                ", rating=" + rating +
+                ", latLng='" + latLng +
+                ", rating='" + rating +
                 ", attributions='" + attributions + '\'' +
+                ", cuisine='" + cuisine + '\''+
+                ", priceLevel='" + priceLevel +'\''+
                 '}';
     }
 }

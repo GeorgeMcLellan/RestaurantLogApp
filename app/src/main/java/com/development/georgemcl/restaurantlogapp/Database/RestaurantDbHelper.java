@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by George on 17-Nov-17.
@@ -14,8 +15,6 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
 
     public static final String DATABASE_NAME = "Restaurant.db";
     public static final String TABLE_NAME = "restaurant_table";
-
-    public static final String FIELD_ID = "_id";
 
     public static final String FIELD_PLACE_ID = "placeid";
 
@@ -30,21 +29,20 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
 
 
     public RestaurantDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 1);
 
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME +
-                " (" + FIELD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FIELD_PLACE_ID + " TEXT, "+
+                " (" + FIELD_PLACE_ID + " TEXT PRIMARY KEY, "+
                 FIELD_NAME + " TEXT, "+
                 FIELD_LAT + " DOUBLE, "+
                 FIELD_LNG + " DOUBLE, "+
                 FIELD_CUISINE + " TEXT, " +
-                FIELD_PRICE_LEVEL + " TEXT, " +
-                FIELD_RATING + " TEXT)");
+                FIELD_PRICE_LEVEL + " INTEGER, " +
+                FIELD_RATING + " FLOAT)");
     }
 
     @Override
@@ -54,7 +52,7 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
 
     }
 
-    public boolean insertData(String place_id, String name, double latitude, double longitude, String cuisine, String price_level, String rating){
+    public boolean insertData(String place_id, String name, double latitude, double longitude, String cuisine, int price_level, Float rating){
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(FIELD_PLACE_ID, place_id);

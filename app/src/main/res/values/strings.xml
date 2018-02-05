@@ -5,4 +5,15 @@
     <string name="title_share">Share</string>
 
     <string name="maps_api_key">AIzaSyCwVEwlLnQXMoPrXUcmAw7ByHWwTZNilhM</string>
+    <string name="cuisine">Cuisine</string>
+    <string name="price">Price</string>
+    <string name="rating">Rating</string>
+    <string-array name="cuisines">
+        <item>Japanese</item>
+        <item>Italian</item>
+        <item>French</item>
+        <item>Korean</item>
+        <item>Chinese</item>
+        <item>Malaysian</item>
+    </string-array>
 </resources>

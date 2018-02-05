@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp;
+package com.development.georgemcl.restaurantlogapp.Fragments;
 
 
 import android.Manifest;
@@ -11,13 +11,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
+import com.development.georgemcl.restaurantlogapp.Activities.MainActivity;
+import com.development.georgemcl.restaurantlogapp.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -38,6 +38,7 @@ public class FindRestaurantsFragment extends Fragment {
 
     private static final String TAG = "FindRestaurantsFragment";
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int TYPE_RESTAURANT_FILTER = 79;
 
     private View mView;
 
@@ -53,7 +54,7 @@ public class FindRestaurantsFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_find_restaurants, container, false);
 
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ESTABLISHMENT)
+                .setTypeFilter(TYPE_RESTAURANT_FILTER)
                 .build();
         LatLngBounds userLatLng = getUserLocationBounds();
         try {
@@ -78,6 +79,7 @@ public class FindRestaurantsFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
                 Log.i(TAG, "OnActivityResult: Place : " + place.getName());
+                Log.i(TAG, "Place Types: " + place.getPlaceTypes());
 
                 Bundle placeData = new Bundle();
                 placeData.putString("PlaceId", place.getId());
