@@ -5,9 +5,14 @@
     <string name="title_share">Share</string>
 
     <string name="maps_api_key">AIzaSyCwVEwlLnQXMoPrXUcmAw7ByHWwTZNilhM</string>
+    <string name="id">ID</string>
+    <string name="name">Name</string>
     <string name="cuisine">Cuisine</string>
     <string name="price">Price</string>
     <string name="rating">Rating</string>
+    <string name="priceLevel">Price Level</string>
+    <string name="lat">Latitude</string>
+    <string name="lng">Longitude</string>
     <string-array name="cuisines">
         <item>Japanese</item>
         <item>Italian</item>

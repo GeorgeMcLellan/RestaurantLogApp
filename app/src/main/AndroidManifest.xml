@@ -31,6 +31,9 @@
         <activity android:name=".Activities.AddRestaurantActivity"
             android:parentActivityName=".Activities.MainActivity">
         </activity>
+        <activity android:name=".Activities.ViewRestaurantActivity"
+            android:parentActivityName=".Activities.MainActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -20,10 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 
 import com.development.georgemcl.restaurantlogapp.Activities.AddRestaurantActivity;
+import com.development.georgemcl.restaurantlogapp.Activities.ViewRestaurantActivity;
 import com.development.georgemcl.restaurantlogapp.CustomInfoWindow;
 import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
@@ -104,8 +104,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        String s = ((Restaurant)marker.getTag()).getId();
-        Toast.makeText(getContext(), "Clicked "+ s, Toast.LENGTH_SHORT).show();
+        Restaurant restaurant = (Restaurant)marker.getTag();
+        Intent intent = new Intent(getContext(), ViewRestaurantActivity.class);
+        intent.putExtra(getString(R.string.id),restaurant.getId())
+                .putExtra(getString(R.string.name), restaurant.getName())
+                .putExtra(getString(R.string.cuisine), restaurant.getCuisine())
+                .putExtra(getString(R.string.rating), restaurant.getRating())
+                .putExtra(getString(R.string.priceLevel), restaurant.getPriceLevel());
+        startActivity(intent);
     }
 
     private void moveCameraToUserLocation() {
@@ -135,7 +141,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void populateMap() {
         Cursor cursor = restaurantDb.getAllData();
         Restaurant currentRestaurant;
-
         while(cursor.moveToNext()){
             currentRestaurant = new Restaurant();
             currentRestaurant.setId(cursor.getString(0));
@@ -164,7 +169,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private void addRestaurantToMap(final Restaurant restaurant){
+    private void buildDialog(final Restaurant restaurant){
         //Find restaurant on the map
         try {
             /*MarkerOptions options = new MarkerOptions()
@@ -198,15 +203,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private void addRestaurant(Restaurant restaurant) {
         Intent intent = new Intent(getContext(), AddRestaurantActivity.class);
-        intent.putExtra("id", restaurant.getId())
-                .putExtra("name", restaurant.getName())
-                .putExtra("address", restaurant.getAddress())
-                .putExtra("phonenumber", restaurant.getPhoneNumber())
-                .putExtra("website", restaurant.getWebsiteUri())
-                .putExtra("lat", restaurant.getLatLng().latitude)
-                .putExtra("lng", restaurant.getLatLng().longitude)
-                .putExtra("rating", restaurant.getRating());
-
+        intent.putExtra(getString(R.string.id), restaurant.getId())
+                .putExtra(getString(R.string.name), restaurant.getName())
+                .putExtra(getString(R.string.lat), restaurant.getLatLng().latitude)
+                .putExtra(getString(R.string.lng), restaurant.getLatLng().longitude)
+                .putExtra(getString(R.string.rating), restaurant.getRating());
         startActivity(intent);
     }
 
@@ -244,12 +245,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                         // restaurant.setAttributions(place.getAttributions().toString());
                         Log.i(TAG, "onComplete: Restaurant details : " + restaurant.toString());
 
-
                     }catch (NullPointerException e){
                         Log.d(TAG, "onComplete: NullPointerException" + e.getMessage());
                     }
 
-                    addRestaurantToMap(restaurant);
+                    buildDialog(restaurant);
 
                     places.release();
                 } else {

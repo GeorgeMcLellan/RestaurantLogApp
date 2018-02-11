@@ -27,7 +27,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
     private static final String TAG  = "AddRestaurantActivity";
 
-    private Intent mIntent;
+    private Bundle mBundle;
     private RestaurantDbHelper restaurantDb;
 
 
@@ -43,7 +43,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
         restaurantDb = new RestaurantDbHelper(this);
 
-        mIntent = getIntent();
+        mBundle = getIntent().getExtras();
 
         ArrayAdapter cuisineAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.cuisines));
         cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -62,16 +62,16 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
     private void prepopulateFields() {
 
-        nameTxt.setText(mIntent.getStringExtra("name"));
-        ratingRb.setRating(mIntent.getFloatExtra("rating",-1));
+        nameTxt.setText(mBundle.getString(getString(R.string.name)));
+        ratingRb.setRating(mBundle.getFloat(getString(R.string.rating)));
     }
 
     private void addRestaurantToDb() {
         boolean isInserted = restaurantDb.insertData(
-                mIntent.getStringExtra("id"),
-                mIntent.getStringExtra("name"),
-                mIntent.getDoubleExtra("lat",-1),
-                mIntent.getDoubleExtra("lng",-1),
+                mBundle.getString(getString(R.string.id)),
+                mBundle.getString(getString(R.string.name)),
+                mBundle.getDouble(getString(R.string.lat)),
+                mBundle.getDouble(getString(R.string.lng)),
                 cuisineSpn.getSelectedItem().toString(),
                 getPrice(),
                 ratingRb.getRating()
