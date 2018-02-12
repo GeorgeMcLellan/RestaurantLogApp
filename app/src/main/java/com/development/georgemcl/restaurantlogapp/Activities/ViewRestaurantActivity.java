@@ -1,10 +1,14 @@
 package com.development.georgemcl.restaurantlogapp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.development.georgemcl.restaurantlogapp.EditRestaurantActivity;
 import com.development.georgemcl.restaurantlogapp.R;
 
 
@@ -22,6 +26,7 @@ public class ViewRestaurantActivity extends AppCompatActivity {
     TextView ratingTxt;
     TextView priceLevelTxt;
     RatingBar ratingRb;
+    FloatingActionButton editFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +38,9 @@ public class ViewRestaurantActivity extends AppCompatActivity {
         ratingTxt = (TextView) findViewById(R.id.ratingTxt);
         priceLevelTxt = (TextView) findViewById(R.id.priceLevelTxt);
         ratingRb = findViewById(R.id.ratingRb);
+        editFab = findViewById(R.id.editFab);
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
 
         mPlaceId = bundle.getString(getString(R.string.id));
 
@@ -57,5 +63,15 @@ public class ViewRestaurantActivity extends AppCompatActivity {
         priceLevelTxt.setText(priceAsDollars);
 
 
+        editFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditRestaurantActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
     }
+
 }

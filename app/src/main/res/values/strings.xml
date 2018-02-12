@@ -13,6 +13,8 @@
     <string name="priceLevel">Price Level</string>
     <string name="lat">Latitude</string>
     <string name="lng">Longitude</string>
+    <string name="remove">Remove</string>
+    <string name="save">Save</string>
     <string-array name="cuisines">
         <item>Japanese</item>
         <item>Italian</item>
