@@ -1,6 +1,7 @@
 package com.development.georgemcl.restaurantlogapp.Activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.development.georgemcl.restaurantlogapp.EditRestaurantActivity;
+import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
+import com.development.georgemcl.restaurantlogapp.Utils.Utilities;
+
 import com.development.georgemcl.restaurantlogapp.R;
 
 
@@ -27,6 +30,7 @@ public class ViewRestaurantActivity extends AppCompatActivity {
     TextView priceLevelTxt;
     RatingBar ratingRb;
     FloatingActionButton editFab;
+    RestaurantDbHelper restaurantDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,28 +44,14 @@ public class ViewRestaurantActivity extends AppCompatActivity {
         ratingRb = findViewById(R.id.ratingRb);
         editFab = findViewById(R.id.editFab);
 
+        restaurantDb = new RestaurantDbHelper(this);
+
         final Bundle bundle = getIntent().getExtras();
 
         mPlaceId = bundle.getString(getString(R.string.id));
 
-        nameTxt.setText(bundle.getString(getString(R.string.name)));
-        cuisineTxt.setText(bundle.getString(getString(R.string.cuisine)));
-        ratingRb.setRating(bundle.getFloat(getString(R.string.rating)));
-        int priceLevel = bundle.getInt(getString(R.string.priceLevel));
-        String priceAsDollars;
-        switch (priceLevel){
-            case 1: priceAsDollars = "$";
-                break;
-            case 2: priceAsDollars = "$$";
-                break;
-            case 3: priceAsDollars = "$$$";
-                break;
-            case 4: priceAsDollars = "$$$$";
-                break;
-            default: priceAsDollars = "";
-        }
-        priceLevelTxt.setText(priceAsDollars);
-
+        Cursor cursor = restaurantDb.getRowById(mPlaceId);
+        populateView(cursor);
 
         editFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +62,15 @@ public class ViewRestaurantActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void populateView(Cursor cursor) {
+        while (cursor.moveToNext()){
+            nameTxt.setText(cursor.getString(1));
+            cuisineTxt.setText(cursor.getString(4));
+            priceLevelTxt.setText(Utilities.convertPriceLevelToDollarSign(cursor.getInt(5)));
+            ratingRb.setRating(cursor.getFloat(6));
+        }
     }
 
 }

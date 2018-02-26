@@ -34,7 +34,7 @@
         <activity
             android:name=".Activities.ViewRestaurantActivity"
             android:parentActivityName=".Activities.MainActivity"></activity>
-        <activity android:name=".EditRestaurantActivity"></activity>
+        <activity android:name=".Activities.EditRestaurantActivity"></activity>
     </application>
 
 </manifest>

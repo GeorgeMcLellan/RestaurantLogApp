@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Criteria;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,7 +50,7 @@ import com.google.android.gms.tasks.Task;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener{
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, View.OnClickListener{
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -62,6 +65,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private Marker mCurrentMarker;
 
+    private SharedPreferences mSharedPreferences;
     private RestaurantDbHelper restaurantDb;
 
     private View mView;
@@ -89,29 +93,79 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         getLocationPermission();
         checkIfUserSelectedPlaceInFindFrag();
 
+        mSharedPreferences = getActivity().getSharedPreferences("CameraPosition",Context.MODE_PRIVATE);
+
+        mView.findViewById(R.id.listFab).setOnClickListener(this);
+
         return mView;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "OnMapReady() called");
         mMap = googleMap;
         CustomInfoWindow customInfoWindow = new CustomInfoWindow(getContext());
         mMap.setInfoWindowAdapter(customInfoWindow);
         mMap.setOnInfoWindowClickListener(this);
         moveCameraToUserLocation();
+        if (!moveCameraToSavedPosition())
+            moveCameraToUserLocation();
         populateMap();
     }
+
+
 
     @Override
     public void onInfoWindowClick(Marker marker) {
         Restaurant restaurant = (Restaurant)marker.getTag();
         Intent intent = new Intent(getContext(), ViewRestaurantActivity.class);
-        intent.putExtra(getString(R.string.id),restaurant.getId())
-                .putExtra(getString(R.string.name), restaurant.getName())
-                .putExtra(getString(R.string.cuisine), restaurant.getCuisine())
-                .putExtra(getString(R.string.rating), restaurant.getRating())
-                .putExtra(getString(R.string.priceLevel), restaurant.getPriceLevel());
+        intent.putExtra(getString(R.string.id),restaurant.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.listFab :{
+                switchMapForListFragment();
+                Log.d(TAG, "onClick listFab");
+            }
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "OnPause Called");
+        if (mMap != null){
+            Log.d(TAG, "OnPause - saving camera position");
+            saveCameraPosition();
+        }
+
+
+    }
+
+    private void saveCameraPosition() {
+        LatLng cameraPosition =  mMap.getCameraPosition().target;
+        mSharedPreferences.edit().putFloat(getString(R.string.lat),(float) cameraPosition.latitude)
+                .putFloat(getString(R.string.lng), (float) cameraPosition.longitude)
+                .apply();
+    }
+
+    private boolean moveCameraToSavedPosition() {
+        LatLng targetPosition = new LatLng(
+                mSharedPreferences.getFloat(getString(R.string.lat), -1),
+                mSharedPreferences.getFloat(getString(R.string.lng), -1)
+        );
+        if (targetPosition.latitude == -1 || targetPosition.longitude == -1){
+            return false;
+        }
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(targetPosition, MAP_ZOOM);
+        mMap.moveCamera(cameraUpdate);
+        return true;
+
+
     }
 
     private void moveCameraToUserLocation() {
@@ -137,6 +191,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         }
     }
+
 
     private void populateMap() {
         Cursor cursor = restaurantDb.getAllData();
@@ -257,6 +312,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 }
             }
         });
+    }
+
+    private void switchMapForListFragment() {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, new RestaurantListFrag()).commit();
+
     }
 
 

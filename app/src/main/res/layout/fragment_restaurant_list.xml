@@ -3,27 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.development.georgemcl.restaurantlogapp.Fragments.MapFragment">
-
-    <com.google.android.gms.maps.MapView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:id="@+id/map">
-
-    </com.google.android.gms.maps.MapView>
+    tools:context="com.development.georgemcl.restaurantlogapp.Fragments.RestaurantListFrag">
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/listFab"
+        android:id="@+id/mapFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginBottom="50dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="21dp"
         android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_list_black_24dp" />
+        android:src="@drawable/ic_map_black_24dp"
+        android:layout_alignParentRight="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

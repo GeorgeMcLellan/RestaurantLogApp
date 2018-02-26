@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.development.georgemcl.restaurantlogapp.Fragments.FindRestaurantsFragment;
 import com.development.georgemcl.restaurantlogapp.Fragments.MapFragment;
+import com.development.georgemcl.restaurantlogapp.Fragments.RestaurantListFrag;
 import com.development.georgemcl.restaurantlogapp.Fragments.ShareFragment;
 import com.development.georgemcl.restaurantlogapp.R;
 
@@ -26,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        startFragment(new MapFragment());
+        replaceFragment(new MapFragment());
     }
 
-    private void startFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, fragment).commit();
     }
@@ -42,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    startFragment(new MapFragment());
+                    replaceFragment(new MapFragment());
                     return true;
                 case R.id.navigation_find:
-                    startFragment(new FindRestaurantsFragment());
+                    replaceFragment(new FindRestaurantsFragment());
                     return true;
                 case R.id.navigation_share:
-                    startFragment(new ShareFragment());
+                    replaceFragment(new ShareFragment());
                     return true;
             }
             return false;

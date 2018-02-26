@@ -1,7 +1,8 @@
-package com.development.georgemcl.restaurantlogapp;
+package com.development.georgemcl.restaurantlogapp.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 
 import com.development.georgemcl.restaurantlogapp.Activities.MainActivity;
 import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
+import com.development.georgemcl.restaurantlogapp.R;
+import com.development.georgemcl.restaurantlogapp.Utils.Utilities;
 
 public class EditRestaurantActivity extends AppCompatActivity {
 
@@ -54,7 +57,8 @@ public class EditRestaurantActivity extends AppCompatActivity {
         cuisineAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cuisineSpn.setAdapter(cuisineAdapter);
 
-        populateFields();
+        Cursor cursor = restaurantDb.getRowById(placeId);
+        populateView(cursor);
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,15 +125,18 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
     }
 
-    private void populateFields() {
-        nameTxt.setText(mBundle.getString(getString(R.string.name)));
-        cuisineSpn.setSelection(getPosition());
-        priceSb.setProgress(mBundle.getInt(getString(R.string.priceLevel)));
-        ratingRb.setRating(mBundle.getFloat(getString(R.string.rating)));
+    private void populateView(Cursor cursor) {
+        while (cursor.moveToNext()){
+
+            nameTxt.setText(cursor.getString(1));
+            cuisineSpn.setSelection(getPosition(cursor.getString(4)));
+            priceSb.setProgress(cursor.getInt(5));
+            ratingRb.setRating(cursor.getFloat(6));
+        }
+
     }
 
-    public int getPosition() {
-        String cuisine = mBundle.getString(getString(R.string.cuisine));
+    public int getPosition(String cuisine) {
         String[] cuisinesArray = getResources().getStringArray(R.array.cuisines);
         for(int i = 0; i < cuisinesArray.length; i++){
             if (cuisinesArray[i].equals(cuisine)){

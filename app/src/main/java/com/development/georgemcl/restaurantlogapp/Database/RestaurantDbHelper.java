@@ -94,5 +94,13 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
         return res;
     }
 
+    public Cursor getRowById(String place_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String s = " = ?";
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + FIELD_PLACE_ID + s, new String[]{place_id});
+        return res;
+
+    }
+
 
 }
