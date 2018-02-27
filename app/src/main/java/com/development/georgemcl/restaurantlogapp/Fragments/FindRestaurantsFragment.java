@@ -37,8 +37,6 @@ import static android.app.Activity.RESULT_OK;
 public class FindRestaurantsFragment extends Fragment {
 
     private static final String TAG = "FindRestaurantsFragment";
-    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    private static final int TYPE_RESTAURANT_FILTER = 79;
 
     private View mView;
 
@@ -53,77 +51,9 @@ public class FindRestaurantsFragment extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_find_restaurants, container, false);
 
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(TYPE_RESTAURANT_FILTER)
-                .build();
-        LatLngBounds userLatLng = getUserLocationBounds();
-        try {
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                            .setBoundsBias(userLatLng)
-                            .setFilter(typeFilter)
-                            .build(getActivity());
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(TAG, "GooglePlayServicesRepairableException : " + e.getMessage());
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(TAG, "GooglePlayServicesNotAvailableException : " + e.getMessage());
-        }
+
 
         return mView;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                Log.i(TAG, "OnActivityResult: Place : " + place.getName());
-                Log.i(TAG, "Place Types: " + place.getPlaceTypes());
-
-                Bundle placeData = new Bundle();
-                placeData.putString("PlaceId", place.getId());
-
-                MapFragment mapFragment = new MapFragment();
-                mapFragment.setArguments(placeData);
-
-                ((MainActivity)getActivity()).setHomeAsSelectedNav();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, mapFragment).commit();
-
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(getContext(), data);
-                // TODO: Handle the error.
-                Log.e(TAG, "OnActivityResult: PlaceAutocomplete error : " + status.getStatusMessage());
-
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-        }
-    }
-
-    public LatLngBounds getUserLocationBounds() {
-        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        String bestProvider = String.valueOf(manager.getBestProvider(new Criteria(), true));
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "getUserLocationBounds : Permission has not been granted");
-            return new LatLngBounds(
-                    new LatLng(0, 0),
-                    new LatLng(0, 0));
-        }
-        Location location = manager.getLastKnownLocation(bestProvider);
-        if (location != null) {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            Log.d(TAG, "getUserLocationBounds : Acquired user location at : "+latitude+" "+longitude );
-            return new LatLngBounds(
-                    new LatLng(latitude - 0.03, longitude - 0.03),
-                    new LatLng(latitude + 0.03, longitude + 0.03)
-                    );
-        }
-        Log.d(TAG, "getUserLocationBounds : User location is null");
-        return new LatLngBounds(
-                new LatLng(0, 0),
-                new LatLng(0, 0));
-    }
 }

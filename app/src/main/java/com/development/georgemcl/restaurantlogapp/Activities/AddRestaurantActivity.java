@@ -79,11 +79,16 @@ public class AddRestaurantActivity extends AppCompatActivity {
         if (isInserted){
             Log.d(TAG,"INSERTED");
             Toast.makeText(this, "Restaurant Added", Toast.LENGTH_SHORT).show();
-            finish();
+            launchIntent();
         }else{
             Log.d(TAG, "NOT INSERTED");
         }
 
+    }
+
+    private void launchIntent() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     public int getPrice() {

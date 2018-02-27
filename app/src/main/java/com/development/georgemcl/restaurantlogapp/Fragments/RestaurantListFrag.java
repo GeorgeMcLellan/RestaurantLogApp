@@ -24,7 +24,7 @@ import java.util.LinkedList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RestaurantListFrag extends Fragment implements View.OnClickListener{
+public class RestaurantListFrag extends Fragment{
     private static final String TAG = "RestaurantListFrag";
 
     private LinkedList<Restaurant> mRestaurantList;
@@ -50,8 +50,6 @@ public class RestaurantListFrag extends Fragment implements View.OnClickListener
 
         createLinkedList();
         initRecyclerView();
-
-        mView.findViewById(R.id.mapFab).setOnClickListener(this);
 
         return mView;
     }
@@ -85,15 +83,6 @@ public class RestaurantListFrag extends Fragment implements View.OnClickListener
     }
 
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.mapFab : {
-                switchListForMapFragment();
-                Log.d(TAG, "OnClick: mapFab");
-            }
-        }
-    }
 
     private void switchListForMapFragment() {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

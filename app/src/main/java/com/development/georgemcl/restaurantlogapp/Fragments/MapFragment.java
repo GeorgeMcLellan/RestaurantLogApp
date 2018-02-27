@@ -50,7 +50,7 @@ import com.google.android.gms.tasks.Task;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, View.OnClickListener{
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener{
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -95,8 +95,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         mSharedPreferences = getActivity().getSharedPreferences("CameraPosition",Context.MODE_PRIVATE);
 
-        mView.findViewById(R.id.listFab).setOnClickListener(this);
-
         return mView;
     }
 
@@ -121,17 +119,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         Intent intent = new Intent(getContext(), ViewRestaurantActivity.class);
         intent.putExtra(getString(R.string.id),restaurant.getId());
         startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.listFab :{
-                switchMapForListFragment();
-                Log.d(TAG, "onClick listFab");
-            }
-        }
-
     }
 
     @Override

@@ -8,11 +8,10 @@
     tools:context="com.development.georgemcl.restaurantlogapp.Activities.MainActivity">
 
 
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
+    <include
+        layout="@layout/content_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
