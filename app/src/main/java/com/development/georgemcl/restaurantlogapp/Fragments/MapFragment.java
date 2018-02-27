@@ -40,6 +40,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -134,9 +135,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void saveCameraPosition() {
-        LatLng cameraPosition =  mMap.getCameraPosition().target;
-        mSharedPreferences.edit().putFloat(getString(R.string.lat),(float) cameraPosition.latitude)
-                .putFloat(getString(R.string.lng), (float) cameraPosition.longitude)
+        CameraPosition cameraPosition = mMap.getCameraPosition();
+        //LatLng cameraPosition =  mMap.getCameraPosition().target;
+        mSharedPreferences.edit().putFloat(getString(R.string.lat),(float) cameraPosition.target.latitude)
+                .putFloat(getString(R.string.lng), (float) cameraPosition.target.longitude)
+                .putFloat(getString(R.string.Zoom),cameraPosition.zoom)
                 .apply();
     }
 
@@ -148,7 +151,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (targetPosition.latitude == -1 || targetPosition.longitude == -1){
             return false;
         }
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(targetPosition, MAP_ZOOM);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(targetPosition, mSharedPreferences.getFloat(getString(R.string.Zoom), -1));
         mMap.moveCamera(cameraUpdate);
         return true;
 
