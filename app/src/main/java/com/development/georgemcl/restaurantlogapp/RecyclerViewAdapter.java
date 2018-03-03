@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final Restaurant restaurant = restaurantList.get(position);
         final String name = restaurant.getName();
         holder.nameTxt.setText(name);
-        holder.priceLevelTxt.setText(Utilities.convertPriceLevelToDollarSign(restaurant.getPriceLevel()));
+        holder.priceRb.setRating(restaurant.getPriceLevel());
         holder.ratingTxt.setText(String.valueOf(restaurant.getRating()));
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,13 +76,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         TextView nameTxt;
         TextView ratingTxt;
-        TextView priceLevelTxt;
+        RatingBar priceRb;
         RelativeLayout parentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             nameTxt = itemView.findViewById(R.id.nameTxt);
-            priceLevelTxt = itemView.findViewById(R.id.priceLevelTxt);
+            priceRb = itemView.findViewById(R.id.priceRb);
             ratingTxt = itemView.findViewById(R.id.ratingTxt);
             parentLayout = itemView.findViewById(R.id.relativeLayout);
         }

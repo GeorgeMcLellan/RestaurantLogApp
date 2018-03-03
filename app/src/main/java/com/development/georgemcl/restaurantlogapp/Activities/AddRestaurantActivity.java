@@ -21,7 +21,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
 
     TextView nameTxt;
     Spinner cuisineSpn;
-    SeekBar priceSb;
+    RatingBar priceRb;
     RatingBar ratingRb;
     Button addBtn;
 
@@ -37,7 +37,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_restaurant);
         nameTxt = (TextView) findViewById(R.id.nameTxt);
         cuisineSpn = (Spinner) findViewById(R.id.cuisineSpn);
-        priceSb = (SeekBar) findViewById(R.id.priceSb);
+        priceRb = findViewById(R.id.priceRb);
         ratingRb = (RatingBar) findViewById(R.id.ratingRb);
         addBtn = (Button) findViewById(R.id.addBtn);
 
@@ -73,7 +73,7 @@ public class AddRestaurantActivity extends AppCompatActivity {
                 mBundle.getDouble(getString(R.string.lat)),
                 mBundle.getDouble(getString(R.string.lng)),
                 cuisineSpn.getSelectedItem().toString(),
-                getPrice(),
+                priceRb.getRating(),
                 ratingRb.getRating()
                 );
         if (isInserted){
@@ -89,9 +89,5 @@ public class AddRestaurantActivity extends AppCompatActivity {
     private void launchIntent() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-    }
-
-    public int getPrice() {
-        return priceSb.getProgress();
     }
 }

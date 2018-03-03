@@ -47,6 +47,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,6 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         mSharedPreferences = getActivity().getSharedPreferences("CameraPosition",Context.MODE_PRIVATE);
 
+
         return mView;
     }
 
@@ -117,6 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onInfoWindowClick(Marker marker) {
         Restaurant restaurant = (Restaurant)marker.getTag();
+        Log.d(TAG, "Price level = " +restaurant.getPriceLevel());
         Intent intent = new Intent(getContext(), ViewRestaurantActivity.class);
         intent.putExtra(getString(R.string.id),restaurant.getId());
         startActivity(intent);
@@ -193,7 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             LatLng latlng = new LatLng(cursor.getDouble(2), cursor.getDouble(3));
             currentRestaurant.setLatLng(latlng);
             currentRestaurant.setCuisine(cursor.getString(4));
-            currentRestaurant.setPriceLevel(cursor.getInt(5));
+            currentRestaurant.setPriceLevel(cursor.getFloat(5));
             currentRestaurant.setRating(cursor.getFloat(6));
 
             MarkerOptions options = new MarkerOptions()
@@ -268,7 +273,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-    private void retrieveRestaurantDetails(String placeId){
+    private void retrieveRestaurantDetails(final String placeId){
 
         final Restaurant restaurant = new Restaurant();
 

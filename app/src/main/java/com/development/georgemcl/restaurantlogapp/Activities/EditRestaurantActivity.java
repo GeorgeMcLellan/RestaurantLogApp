@@ -25,7 +25,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
     TextView nameTxt;
     Spinner cuisineSpn;
-    SeekBar priceSb;
+    RatingBar priceRb;
     RatingBar ratingRb;
     Button saveBtn, removeBtn;
 
@@ -42,7 +42,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
         nameTxt = (TextView) findViewById(R.id.nameTxt);
         cuisineSpn = (Spinner) findViewById(R.id.cuisineSpn);
-        priceSb = (SeekBar) findViewById(R.id.priceSb);
+        priceRb = findViewById(R.id.priceRb);
         ratingRb = (RatingBar) findViewById(R.id.ratingRb);
         saveBtn = (Button) findViewById(R.id.addBtn);
         removeBtn = findViewById(R.id.removeBtn);
@@ -117,9 +117,9 @@ public class EditRestaurantActivity extends AppCompatActivity {
     private boolean modifyRestaurantInDb() {
 
         return restaurantDb.updateData(placeId,
-                mBundle.getString(getString(R.string.name)),
+                nameTxt.getText().toString(),
                 cuisineSpn.getSelectedItem().toString(),
-                priceSb.getProgress(),
+                priceRb.getRating(),
                 ratingRb.getRating()
                 );
 
@@ -130,7 +130,7 @@ public class EditRestaurantActivity extends AppCompatActivity {
 
             nameTxt.setText(cursor.getString(1));
             cuisineSpn.setSelection(getPosition(cursor.getString(4)));
-            priceSb.setProgress(cursor.getInt(5));
+            priceRb.setRating(cursor.getFloat(5));
             ratingRb.setRating(cursor.getFloat(6));
         }
 

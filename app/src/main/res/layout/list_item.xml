@@ -17,15 +17,15 @@
         android:layout_below="@+id/nameTxt"
         >
 
-        <TextView
-            android:id="@+id/priceLevelTxt"
+        <RatingBar
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:id="@+id/ratingRb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            android:text="$$$"
-            android:textSize="18sp"
-            android:textColor="@color/colorMoney"/>
+            android:numStars="5"
+            android:layout_margin="3dp"
+            android:layout_gravity="center"
+            android:progressDrawable="@drawable/money_rating_bar"/>
         <!--
             View added to align ratingTxt right
         -->

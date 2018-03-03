@@ -21,7 +21,7 @@ public class Restaurant {
 
     //Added
     private String cuisine;
-    private int priceLevel;
+    private float priceLevel;
 
     public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, String attributions, float rating) {
         this.id = id;
@@ -34,7 +34,7 @@ public class Restaurant {
         this.attributions = attributions;
     }
 
-    public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, String attributions, float rating, String cuisine, int priceLevel) {
+    public Restaurant(String id, String name, String address, String phoneNumber, Uri websiteUri, LatLng latLng, String attributions, float rating, String cuisine, float priceLevel) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -47,7 +47,7 @@ public class Restaurant {
         this.priceLevel = priceLevel;
     }
 
-    public Restaurant(String id, String name, LatLng latLng, float rating,  String cuisine, int priceLevel) {
+    public Restaurant(String id, String name, LatLng latLng, float rating,  String cuisine, float priceLevel) {
         this.id = id;
         this.name = name;
         this.latLng = latLng;
@@ -130,11 +130,11 @@ public class Restaurant {
         this.cuisine = cuisine;
     }
 
-    public int getPriceLevel() {
+    public float getPriceLevel() {
         return priceLevel;
     }
 
-    public void setPriceLevel(int priceLevel) {
+    public void setPriceLevel(float priceLevel) {
         this.priceLevel = priceLevel;
     }
 
