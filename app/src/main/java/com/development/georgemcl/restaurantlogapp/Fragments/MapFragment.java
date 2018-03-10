@@ -28,6 +28,7 @@ import com.development.georgemcl.restaurantlogapp.Activities.AddRestaurantActivi
 import com.development.georgemcl.restaurantlogapp.Activities.ViewRestaurantActivity;
 import com.development.georgemcl.restaurantlogapp.CustomInfoWindow;
 import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
+import com.development.georgemcl.restaurantlogapp.Models.MarkerClusterItem;
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
 import com.development.georgemcl.restaurantlogapp.R;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -43,9 +44,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.clustering.ClusterManager;
 
 
 /**
@@ -72,6 +73,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private View mView;
     private MapView mMapView;
 
+    private ClusterManager<MarkerClusterItem> mClusterManager;
+
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -80,24 +84,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         mView =  inflater.inflate(R.layout.fragment_map, container, false);
 
-        restaurantDb = new RestaurantDbHelper(getContext());
 
-        // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(getContext(), null);
-
-        // Construct a PlaceDetectionClient.
         mPlaceDetectionClient = Places.getPlaceDetectionClient(getContext(), null);
 
-        getLocationPermission();
-        checkIfUserSelectedPlaceInFindFrag();
-
+        restaurantDb = new RestaurantDbHelper(getContext());
         mSharedPreferences = getActivity().getSharedPreferences("CameraPosition",Context.MODE_PRIVATE);
+
+        getLocationPermission();
+        showRestaurantToBeAdded();
 
         return mView;
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -106,6 +108,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         CustomInfoWindow customInfoWindow = new CustomInfoWindow(getContext());
         mMap.setInfoWindowAdapter(customInfoWindow);
         mMap.setOnInfoWindowClickListener(this);
+        setUpClusterer();
         moveCameraToUserLocation();
         if (!moveCameraToSavedPosition())
             moveCameraToUserLocation();
@@ -113,10 +116,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Restaurant restaurant = (Restaurant)marker.getTag();
+        Restaurant restaurant = (Restaurant) marker.getTag();
         Intent intent = new Intent(getContext(), ViewRestaurantActivity.class);
         intent.putExtra(getString(R.string.id),restaurant.getId());
         startActivity(intent);
@@ -132,6 +134,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
 
 
+    }
+    private void setUpClusterer() {
+        Log.d(TAG, "SetUpClusterer called");
+        mClusterManager = new ClusterManager<MarkerClusterItem>(getContext(), mMap);
+        mMap.setOnCameraIdleListener(mClusterManager);
     }
 
     private void saveCameraPosition() {
@@ -196,10 +203,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             currentRestaurant.setPriceLevel(cursor.getInt(5));
             currentRestaurant.setRating(cursor.getFloat(6));
 
-            MarkerOptions options = new MarkerOptions()
+            Log.d(TAG, "populateMap() : adding cluster item");
+            MarkerClusterItem markerItem = new MarkerClusterItem(latlng.latitude, latlng.longitude);
+            mClusterManager.addItem(markerItem);
+
+            markerItem.setTag(currentRestaurant);
+            /*MarkerOptions options = new MarkerOptions()
                     .position(latlng);
             Marker marker = mMap.addMarker(options);
-            marker.setTag(currentRestaurant);
+            marker.setTag(currentRestaurant);*/
         }
     }
 
@@ -213,6 +225,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             mMapView.getMapAsync(this);
         }
     }
+
+
+
 
     private void buildDialog(final Restaurant restaurant){
         //Find restaurant on the map
@@ -257,7 +272,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-    private void checkIfUserSelectedPlaceInFindFrag() {
+    private void showRestaurantToBeAdded() {
         Bundle extras = getArguments();
         if (extras != null){
             final String placeId = extras.getString("PlaceId");
@@ -266,6 +281,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             setArguments(null);
         }
     }
+
+
 
 
     private void retrieveRestaurantDetails(String placeId){

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
+import com.development.georgemcl.restaurantlogapp.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
