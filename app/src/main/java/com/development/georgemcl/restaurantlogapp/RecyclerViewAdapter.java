@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,12 +51,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final String name = restaurant.getName();
         holder.nameTxt.setText(name);
         holder.priceRb.setRating(restaurant.getPriceLevel());
-        holder.ratingTxt.setText(String.valueOf(restaurant.getRating()));
+        holder.ratingRb.setRating(restaurant.getRating());
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewRestaurant(restaurant);
-                Log.i(TAG, "onClick: clicked on : "+ name);
                 Snackbar.make(holder.nameTxt, name, Toast.LENGTH_SHORT);
             }
         });
@@ -75,16 +75,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameTxt;
-        TextView ratingTxt;
+        RatingBar ratingRb;
         RatingBar priceRb;
-        RelativeLayout parentLayout;
+        LinearLayout parentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             nameTxt = itemView.findViewById(R.id.nameTxt);
             priceRb = itemView.findViewById(R.id.priceRb);
-            ratingTxt = itemView.findViewById(R.id.ratingTxt);
-            parentLayout = itemView.findViewById(R.id.relativeLayout);
+            ratingRb = itemView.findViewById(R.id.ratingRb);
+            parentLayout = itemView.findViewById(R.id.linearLayout);
         }
     }
 }
