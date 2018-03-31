@@ -46,7 +46,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Log.i(TAG, "onBindViewHolder called");
         final Restaurant restaurant = restaurantList.get(position);
         final String name = restaurant.getName();
         holder.nameTxt.setText(name);

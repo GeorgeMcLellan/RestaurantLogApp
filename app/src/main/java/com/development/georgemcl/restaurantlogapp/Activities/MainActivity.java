@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.VibrationEffect;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -61,12 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addFab.setOnClickListener(this);
         changeViewFab.setOnClickListener(this);
         mSharedPref = getSharedPreferences("MapOrList", MODE_PRIVATE);
-
-        if (mSharedPref.getBoolean("isUsingMap", true)){
-            replaceFragment(new MapFragment());
-        }else{
-            replaceFragment(new ListFragment());
-        }
+        launchChosenDisplayFragment();
 
     }
 
@@ -80,8 +73,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.changeViewFab : {
                 if (mSharedPref.getBoolean("isUsingMap", true)){
                     replaceFragment(new RestaurantListFrag());
+                    setMapSharedPref(false);
                 }else{
                     replaceFragment(new MapFragment());
+                    setMapSharedPref(true);
                 }
                 break;
             }
@@ -91,30 +86,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void replaceFragment(Fragment fragment){
-        if (fragment instanceof MapFragment){
-            updateUI(View.VISIBLE, true);
-        }else if(fragment instanceof RestaurantListFrag){
-            updateUI(View.VISIBLE, false);
-        }else{
-            updateUI(View.GONE, false);
+        if (fragment instanceof MapFragment || fragment instanceof  RestaurantListFrag) {
+            setButtonVisibility(View.VISIBLE);
+        }
+        else {
+            setButtonVisibility(View.INVISIBLE);
         }
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, fragment).commit();
     }
 
-    private void updateUI(int buttonVisibility, boolean isUsingMap) {
-        if (buttonVisibility == View.VISIBLE){
-            mSharedPref.edit().putBoolean("isUsingMap", isUsingMap).apply();
-        }
-        if (isUsingMap){
-            changeViewFab.setImageResource(R.drawable.ic_list_black_24dp);
+    private void launchChosenDisplayFragment(){
+        if (mSharedPref.getBoolean("isUsingMap", true)){
+            replaceFragment(new MapFragment());
         }else{
-            changeViewFab.setImageResource(R.drawable.ic_map_black_24dp);
+            replaceFragment(new RestaurantListFrag());
         }
+    }
+
+    private void setMapSharedPref(boolean isUsingMap) {
+        mSharedPref.edit().putBoolean("isUsingMap", isUsingMap).apply();
+    }
+
+    private void setButtonVisibility(int buttonVisibility){
         addFab.setVisibility(buttonVisibility);
         changeViewFab.setVisibility(buttonVisibility);
     }
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -123,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    replaceFragment(new MapFragment());
+                    launchChosenDisplayFragment();
                     return true;
                 case R.id.navigation_find:
                     replaceFragment(new FindRestaurantsFragment());

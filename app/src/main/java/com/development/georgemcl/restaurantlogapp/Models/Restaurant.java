@@ -145,9 +145,9 @@ public class Restaurant {
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", websiteUri=" + websiteUri +
-                ", latLng='" + latLng +
-                ", rating='" + rating +
+                ", websiteUri=" + websiteUri +'\'' +
+                ", latLng='" + latLng +'\'' +
+                ", rating='" + rating +'\'' +
                 ", attributions='" + attributions + '\'' +
                 ", cuisine='" + cuisine + '\''+
                 ", priceLevel='" + priceLevel +'\''+
