@@ -61,23 +61,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:labelFor="@id/priceLevelTxt"
+        android:labelFor="@id/priceRb"
         android:text="@string/price"
         android:textSize="14sp" />
-    <TextView
-        android:layout_width="match_parent"
+
+    <RatingBar
+        style="@style/Widget.AppCompat.RatingBar.Indicator"
+        android:id="@+id/priceRb"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/priceLevelTxt"
+        android:numStars="5"
         android:layout_margin="5dp"
-        android:textSize="18sp"
-        android:textAlignment="center"/>
+        android:layout_gravity="center"
+        android:progressDrawable="@drawable/money_rating_bar"/>
+
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/editFab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="20dp"
         android:clickable="true"
         android:focusable="true"
-        android:layout_gravity="end"
         app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageView
+        android:id="@+id/placeIv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:contentDescription="Restaurant Photo" />
 </LinearLayout>

@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,13 +50,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final Restaurant restaurant = restaurantList.get(position);
         final String name = restaurant.getName();
         holder.nameTxt.setText(name);
-        holder.priceLevelTxt.setText(Utilities.convertPriceLevelToDollarSign(restaurant.getPriceLevel()));
-        holder.ratingTxt.setText(String.valueOf(restaurant.getRating()));
+        holder.priceRb.setRating(restaurant.getPriceLevel());
+        holder.ratingRb.setRating(restaurant.getRating());
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewRestaurant(restaurant);
-                Log.i(TAG, "onClick: clicked on : "+ name);
                 Snackbar.make(holder.nameTxt, name, Toast.LENGTH_SHORT);
             }
         });
@@ -74,16 +75,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameTxt;
-        TextView ratingTxt;
-        TextView priceLevelTxt;
-        RelativeLayout parentLayout;
+        RatingBar ratingRb;
+        RatingBar priceRb;
+        LinearLayout parentLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             nameTxt = itemView.findViewById(R.id.nameTxt);
-            priceLevelTxt = itemView.findViewById(R.id.priceLevelTxt);
-            ratingTxt = itemView.findViewById(R.id.ratingTxt);
-            parentLayout = itemView.findViewById(R.id.relativeLayout);
+            priceRb = itemView.findViewById(R.id.priceRb);
+            ratingRb = itemView.findViewById(R.id.ratingRb);
+            parentLayout = itemView.findViewById(R.id.linearLayout);
         }
     }
 }

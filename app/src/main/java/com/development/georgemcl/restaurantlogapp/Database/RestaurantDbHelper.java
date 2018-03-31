@@ -43,7 +43,7 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
                 FIELD_LAT + " DOUBLE, "+
                 FIELD_LNG + " DOUBLE, "+
                 FIELD_CUISINE + " TEXT, " +
-                FIELD_PRICE_LEVEL + " INTEGER, " +
+                FIELD_PRICE_LEVEL + " FLOAT, " +
                 FIELD_RATING + " FLOAT)");
     }
 
@@ -54,7 +54,7 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
 
     }
 
-    public boolean insertData(String place_id, String name, double latitude, double longitude, String cuisine, int price_level, Float rating){
+    public boolean insertData(String place_id, String name, double latitude, double longitude, String cuisine, Float price_level, Float rating){
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(FIELD_PLACE_ID, place_id);
@@ -69,7 +69,7 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
         return db.insert(TABLE_NAME,null, contentValues) != -1;
     }
 
-    public boolean updateData(String place_id, String name, String cuisine, int price_level, Float rating){
+    public boolean updateData(String place_id, String name, String cuisine, Float price_level, Float rating){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(FIELD_PLACE_ID, place_id);

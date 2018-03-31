@@ -3,9 +3,11 @@ package com.development.georgemcl.restaurantlogapp;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
+import com.development.georgemcl.restaurantlogapp.Utils.Utilities;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -32,16 +34,15 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
         TextView nameTxt = view.findViewById(R.id.nameTxt);
         TextView cuisineTxt = view.findViewById(R.id.cuisineTxt);
-        TextView ratingTxt = view.findViewById(R.id.ratingTxt);
-        TextView priceLevelTxt = view.findViewById(R.id.priceLevelTxt);
+        RatingBar ratingBar = view.findViewById(R.id.ratingRb);
+        RatingBar priceRb = view.findViewById(R.id.priceRb);
 
         Restaurant restaurant = (Restaurant) marker.getTag();
 
         nameTxt.setText(restaurant.getName());
         cuisineTxt.setText(restaurant.getCuisine());
-        ratingTxt.setText(restaurant.getRating()+"");
-        priceLevelTxt.setText(String.valueOf(restaurant.getPriceLevel()));
-
+        ratingBar.setRating(restaurant.getRating());
+        priceRb.setRating(restaurant.getPriceLevel());
 
         return view;
     }
