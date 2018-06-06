@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp.Fragments;
+package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurants;
 
 
 import android.Manifest;
@@ -46,9 +46,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -98,7 +95,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         checkIfUserSelectedPlaceInFindFrag();
 
         mSharedPreferences = getActivity().getSharedPreferences("CameraPosition",Context.MODE_PRIVATE);
-
 
         return mView;
     }
