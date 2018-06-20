@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp.Activities;
+package com.development.georgemcl.restaurantlogapp.Presentation.AddRestaurantActivity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,13 +8,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.development.georgemcl.restaurantlogapp.Presentation.MainActivity.MainActivity;
 import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
-import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
 import com.development.georgemcl.restaurantlogapp.R;
 
 public class AddRestaurantActivity extends AppCompatActivity {

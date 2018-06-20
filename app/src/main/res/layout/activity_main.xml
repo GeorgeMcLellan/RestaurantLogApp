@@ -5,13 +5,17 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.development.georgemcl.restaurantlogapp.Activities.MainActivity">
+    tools:context="com.development.georgemcl.restaurantlogapp.Presentation.MainActivity.MainActivity">
 
 
-    <include
-        layout="@layout/content_main"
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="57dp"
+        >
+
+    </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

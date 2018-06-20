@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurants;
+package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurantsFragment;
 
 
 import android.database.Cursor;
@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.development.georgemcl.restaurantlogapp.Database.RestaurantDbHelper;
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
 import com.development.georgemcl.restaurantlogapp.R;
-import com.development.georgemcl.restaurantlogapp.RecyclerViewAdapter;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.LinkedList;
@@ -25,15 +24,15 @@ import java.util.LinkedList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RestaurantListFrag extends Fragment{
-    private static final String TAG = "RestaurantListFrag";
+public class ListDisplayFragment extends Fragment{
+    private static final String TAG = "ListDisplayFragment";
 
     private LinkedList<Restaurant> mRestaurantList;
 
     private View mView;
     private RestaurantDbHelper restaurantDb;
 
-    public RestaurantListFrag() {
+    public ListDisplayFragment() {
         // Required empty public constructor
     }
 
@@ -78,7 +77,7 @@ public class RestaurantListFrag extends Fragment{
 
     private void initRecyclerView(){
         RecyclerView recyclerView = mView.findViewById(R.id.recycler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), mRestaurantList);
+        RestaurantRecyclerViewAdapter adapter = new RestaurantRecyclerViewAdapter(getContext(), mRestaurantList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -91,6 +90,6 @@ public class RestaurantListFrag extends Fragment{
 
     private void switchListForMapFragment() {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, new MapFragment()).commit();
+        transaction.replace(R.id.fragmentContainer, new MapDisplayFragment()).commit();
     }
 }

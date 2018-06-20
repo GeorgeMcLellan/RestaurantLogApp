@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp.Fragments;
+package com.development.georgemcl.restaurantlogapp.Presentation.ShareFragment;
 
 
 import android.os.Bundle;

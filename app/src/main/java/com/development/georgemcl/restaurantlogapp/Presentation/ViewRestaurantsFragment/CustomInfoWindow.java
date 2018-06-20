@@ -1,4 +1,4 @@
-package com.development.georgemcl.restaurantlogapp;
+package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurantsFragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
-import com.development.georgemcl.restaurantlogapp.Utils.Utilities;
+import com.development.georgemcl.restaurantlogapp.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 

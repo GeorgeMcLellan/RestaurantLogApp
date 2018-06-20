@@ -1,7 +1,9 @@
-package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurants;
+package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurantsFragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,11 +15,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.development.georgemcl.restaurantlogapp.Presentation.AddRestaurantActivity.AddRestaurantActivity;
+import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
 import com.development.georgemcl.restaurantlogapp.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -28,13 +33,11 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-import butterknife.BindView;
-
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
-public class ViewRestaurantsFragment extends Fragment implements View.OnClickListener{
+public class ViewRestaurantsFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "ViewRestaurantsFragment";
 
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -46,12 +49,8 @@ public class ViewRestaurantsFragment extends Fragment implements View.OnClickLis
 
     View mView;
 
-    @BindView(R.id.view_restaurants_add_fab)
     FloatingActionButton buttonAddRestaurant;
-
-    @BindView(R.id.view_restaurants_change_view_fab)
     FloatingActionButton buttonChangeView;
-
 
 
     @Override
@@ -61,23 +60,46 @@ public class ViewRestaurantsFragment extends Fragment implements View.OnClickLis
         mView = inflater.inflate(R.layout.fragment_view_restaurants, container, false);
         mContext = getContext();
         mSharedPref = mContext.getSharedPreferences("MapOrList", MODE_PRIVATE);
-        launchChosenDisplayFragment();
-
+        buttonAddRestaurant = mView.findViewById(R.id.view_restaurants_add_fab);
+        buttonChangeView = mView.findViewById(R.id.view_restaurants_change_view_fab);
         buttonAddRestaurant.setOnClickListener(this);
         buttonChangeView.setOnClickListener(this);
+
+        launchChosenDisplayFragment();
 
         return mView;
     }
 
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(mContext, data);
+                Log.i(TAG, "OnActivityResult: Place : " + place.getName());
+                Log.i(TAG, "Place Types: " + place.getPlaceTypes());
+                buildDialog(convertPlaceToRestaurant(place));
+
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(mContext, data);
+                // TODO: Handle the error.
+                Log.e(TAG, "OnActivityResult: PlaceAutocomplete error : " + status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+    }
+
+
+    @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.addFab : {
+        switch (v.getId()) {
+            case R.id.view_restaurants_add_fab: {
                 launchPlaceAutoComplete();
                 break;
             }
-            case R.id.changeViewFab : {
+            case R.id.view_restaurants_change_view_fab: {
                 toggleFragmentInView();
                 break;
             }
@@ -85,18 +107,33 @@ public class ViewRestaurantsFragment extends Fragment implements View.OnClickLis
     }
 
     private void toggleFragmentInView() {
+        if (mSharedPref.getBoolean("isUsingMap", true)){
+            buttonChangeView.setImageResource(R.drawable.ic_map_black_24dp);
+            setMapSharedPref(false);
+            replaceFragment(new ListDisplayFragment());
+        }else{
+            buttonChangeView.setImageResource(R.drawable.ic_list_black_24dp);
+            setMapSharedPref(true);
+            replaceFragment(new MapDisplayFragment());
+        }
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void setMapSharedPref(boolean isUsingMap) {
+        mSharedPref.edit().putBoolean("isUsingMap", isUsingMap).apply();
+    }
+
+    private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.view_restaurants_fragment_container, fragment).commit();
     }
 
-    private void launchChosenDisplayFragment(){
+    private void launchChosenDisplayFragment() {
         if (mSharedPref.getBoolean("isUsingMap", true)){
-            replaceFragment(new MapFragment());
+            buttonChangeView.setImageResource(R.drawable.ic_list_black_24dp);
+            replaceFragment(new MapDisplayFragment());
         }else{
-            replaceFragment(new RestaurantListFrag());
+            buttonChangeView.setImageResource(R.drawable.ic_map_black_24dp);
+            replaceFragment(new ListFragment());
         }
     }
 
@@ -120,31 +157,50 @@ public class ViewRestaurantsFragment extends Fragment implements View.OnClickLis
         }
     }
 
+    private void buildDialog(final Restaurant restaurant){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        dialogBuilder.setTitle("Add Restaurant")
+                .setMessage("Add this restaurant to your eats?")
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Add the restaurant to db & map
+                        //addRestaurantToDb(restaurant);
+                        addRestaurant(restaurant);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(mContext, data);
-                Log.i(TAG, "OnActivityResult: Place : " + place.getName());
-                Log.i(TAG, "Place Types: " + place.getPlaceTypes());
+                    }
+                })
+                .show();
+    }
 
-                Bundle placeData = new Bundle();
-                placeData.putString("PlaceId", place.getId());
+    private void addRestaurant(Restaurant restaurant) {
+        Intent intent = new Intent(getContext(), AddRestaurantActivity.class);
+        intent.putExtra(getString(R.string.id), restaurant.getId())
+                .putExtra(getString(R.string.name), restaurant.getName())
+                .putExtra(getString(R.string.lat), restaurant.getLatLng().latitude)
+                .putExtra(getString(R.string.lng), restaurant.getLatLng().longitude)
+                .putExtra(getString(R.string.rating), restaurant.getRating());
+        startActivity(intent);
+    }
 
-                MapFragment mapFragment = new MapFragment();
-                mapFragment.setArguments(placeData);
-                replaceFragment(mapFragment);
+    private Restaurant convertPlaceToRestaurant(Place place) {
 
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(mContext, data);
-                // TODO: Handle the error.
-                Log.e(TAG, "OnActivityResult: PlaceAutocomplete error : " + status.getStatusMessage());
-
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-        }
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(place.getId());
+        restaurant.setName(place.getName().toString());
+        restaurant.setAddress(place.getAddress().toString());
+        restaurant.setPhoneNumber(place.getPhoneNumber().toString());
+        restaurant.setWebsiteUri(place.getWebsiteUri());
+        restaurant.setLatLng(place.getLatLng());
+        restaurant.setRating(place.getRating());
+        // restaurant.setAttributions(place.getAttributions().toString());
+        Log.i(TAG, "onComplete: Restaurant details : " + restaurant.toString());
+        return restaurant;
     }
 
     public LatLngBounds getUserLocationBounds() {
@@ -162,7 +218,7 @@ public class ViewRestaurantsFragment extends Fragment implements View.OnClickLis
         if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
-            Log.d(TAG, "getUserLocationBounds : Acquired user location at : "+latitude+" "+longitude );
+            Log.d(TAG, "getUserLocationBounds : Acquired user location at : " + latitude + " " + longitude);
             return new LatLngBounds(
                     new LatLng(latitude - 0.03, longitude - 0.03),
                     new LatLng(latitude + 0.03, longitude + 0.03)

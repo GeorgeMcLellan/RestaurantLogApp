@@ -1,38 +1,34 @@
-package com.development.georgemcl.restaurantlogapp;
+package com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurantsFragment;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.development.georgemcl.restaurantlogapp.Activities.ViewRestaurantActivity;
 import com.development.georgemcl.restaurantlogapp.Models.Restaurant;
-import com.development.georgemcl.restaurantlogapp.Utils.Utilities;
+import com.development.georgemcl.restaurantlogapp.R;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
  * Created by George on 16-Feb-18.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
-    private static final String TAG = "RecyclerViewAdapter";
+public class RestaurantRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantRecyclerViewAdapter.ViewHolder>{
+    private static final String TAG = "RestaurantRecyclerViewAdapter";
 
     private LinkedList<Restaurant> restaurantList;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, LinkedList<Restaurant> restaurantList) {
+    public RestaurantRecyclerViewAdapter(Context context, LinkedList<Restaurant> restaurantList) {
         this.restaurantList = restaurantList;
         this.mContext = context;
     }

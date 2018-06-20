@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurants.MapFragment">
+    tools:context="com.development.georgemcl.restaurantlogapp.Presentation.ViewRestaurantsFragment.MapDisplayFragment">
 
     <com.google.android.gms.maps.MapView
         android:layout_height="match_parent"

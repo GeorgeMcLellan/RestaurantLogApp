@@ -20,7 +20,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".Presentation.MainActivity.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +29,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.AddRestaurantActivity"
-            android:parentActivityName=".Activities.MainActivity"></activity>
+            android:name=".Presentation.AddRestaurantActivity.AddRestaurantActivity"
+            android:parentActivityName=".Presentation.MainActivity.MainActivity"></activity>
         <activity
             android:name=".Activities.ViewRestaurantActivity"
-            android:parentActivityName=".Activities.MainActivity"></activity>
+            android:parentActivityName=".Presentation.MainActivity.MainActivity"></activity>
         <activity android:name=".Activities.EditRestaurantActivity"></activity>
     </application>
 
